@@ -1,2 +1,2 @@
 # lab3_18005106_Tapia
-Laboratorio 2: Paradigma Orientado a Objetos (Java)
+Laboratorio 3: Paradigma Orientado a Objetos (Java)
