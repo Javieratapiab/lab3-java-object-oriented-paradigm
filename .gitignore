@@ -23,7 +23,7 @@ hs_err_pid*
 .idea
 
 # OSX files
-.DS_Store
+*.DS_Store
 
 # Ignore Gradle GUI config
 gradle-app.setting
