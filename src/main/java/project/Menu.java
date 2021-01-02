@@ -4,15 +4,16 @@ import java.util.*;
 
 public class Menu {
   private static boolean exitProgram = false;
-  private static boolean showOptionsTwo = true;
-  private static final Scanner scanner = new Scanner(System.in);
+  private static boolean showStepsTwo = true;
+  private static boolean showStepsThree = true;
+  private static Scanner scanner = new Scanner(System.in);
   private static Stack currentStack;
 
-  public static void printHeader() {
+  private static void printHeader() {
     System.out.print("### SISTEMA DE PREGUNTAS Y RESPUESTAS ###\n");
   }
 
-  public static void printStepsOne() {
+  private static void printStepsOne() {
     printHeader();
     System.out.print("1. Empezar con un Stack existente\n");
     System.out.print("2. Crear un Stack desde cero\n");
@@ -20,21 +21,19 @@ public class Menu {
     System.out.print("ESCOJA UNA OPCIÓN:\n");
   }
 
-  public static void printStepsTwo() {
-    if (showOptionsTwo) {
-      printHeader();
-      if (currentStack.getLoggedUser() != null) {
-        System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
-      }
-      System.out.print("1. Registrar un usuario\n");
-      System.out.print("2. Loguear un usuario\n");
-      System.out.print("3. Cerrar sesión\n");
-      System.out.print("4. Salir del programa\n");
-      System.out.print("ESCOJA UNA OPCIÓN:\n");
+  private static void printStepsTwo() {
+    printHeader();
+    if (currentStack.getLoggedUser() != null) {
+      System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
     }
+    System.out.print("1. Registrar un usuario\n");
+    System.out.print("2. Loguear un usuario\n");
+    System.out.print("3. Cerrar sesión\n");
+    System.out.print("4. Salir del programa\n");
+    System.out.print("ESCOJA UNA OPCIÓN:\n");
   }
 
-  public static void printStepsThree() {
+  private static void printStepsThree() {
     printHeader();
     if (currentStack.getLoggedUser() != null) {
       System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
@@ -48,15 +47,76 @@ public class Menu {
     System.out.print("ESCOJA UNA OPCIÓN:\n");
   }
 
-  public static void initRegisterOrLogin() {
+  private static void showOptionsForLoggedUser() {
+    // Imprime instrucciones
+    if (showStepsThree) {
+      printStepsThree();
+    }
+
+    scanner = new Scanner(System.in);
+    String selectedOptionThree = scanner.nextLine();
+
+    switch (selectedOptionThree) {
+      case "1":
+        // Agregar nueva pregunta (Ask)
+        break;
+      case "2":
+        // Responder pregunta (Answer)
+        break;
+      case "3":
+        // Dar recompensa (Reward)
+        break;
+      case "4":
+        // Aceptar respuesta (Accept)
+        break;
+      case "5":
+        // Cerrar sesión
+        showStepsTwo = true;
+        setLogout();
+        break;
+      case "6":
+        // Salir del programa
+        exitProgram();
+        break;
+      default:
+        showStepsTwo = true;
+        printInvalid(selectedOptionThree);
+        break;
+    }
+  }
+
+  private static void exitProgram() {
+    printLogout();
+    exitProgram = true;
+  }
+
+  private static void setLogout() {
+    System.out.println("Ingresa nombre de usuario:");
+    String username = scanner.nextLine();
+    System.out.println("Ingresa password:");
+    String password = scanner.nextLine();
+    boolean logoutSuccess = currentStack.logout(username, password);
+    if (logoutSuccess) {
+      System.out.printf("El usuario %s ha sido deslogueado correctamente\n", username);
+    } else {
+      System.out.printf("El usuario %s no se encuentra logueado. Intenta con otro nombre\n", username);
+    }
+  }
+
+  private static void showRegisterOrLoginOptions() {
     String username;
     String password;
+
     // Imprime instrucciones
-    printStepsTwo();
-    int selectedOptionTwo = Integer.parseInt(scanner.nextLine());
+    if (showStepsTwo) {
+      printStepsTwo();
+    }
+
+    scanner = new Scanner(System.in);
+    String selectedOptionTwo = scanner.nextLine();
 
     switch (selectedOptionTwo) {
-      case 1 -> {
+      case "1":
         // Registrar usuario
         System.out.println("Ingresa nombre de usuario:");
         username = scanner.nextLine();
@@ -69,8 +129,7 @@ public class Menu {
           System.out.printf("El usuario %s ya existe. Intenta con otro nombre\n", username);
         }
         break;
-      }
-      case 2 -> {
+      case "2":
         // Loguear usuario
         System.out.println("Ingresa nombre de usuario:");
         username = scanner.nextLine();
@@ -78,39 +137,33 @@ public class Menu {
         password = scanner.nextLine();
         boolean loginSuccess = currentStack.login(username, password);
         if (loginSuccess) {
-          showOptionsTwo = false;
+          showStepsTwo = false;
           System.out.printf("El usuario %s ha sido logueado correctamente\n", username);
-          printStepsThree();
-          showOptionsTwo = true;
+          showOptionsForLoggedUser();
         } else {
           System.out.printf("El usuario %s no se encuentra registrado. Intenta con otro nombre\n", username);
         }
         break;
-      }
-      case 3 -> {
+      case "3":
         // Cerrar sesión
-        System.out.println("Ingresa nombre de usuario:");
-        username = scanner.nextLine();
-        System.out.println("Ingresa password:");
-        password = scanner.nextLine();
-        boolean logoutSuccess = currentStack.logout(username, password);
-        if (logoutSuccess) {
-          System.out.printf("El usuario %s ha sido deslogueado correctamente\n", username);
-        } else {
-          System.out.printf("El usuario %s no se encuentra logueado. Intenta con otro nombre\n", username);
-        }
+        setLogout();
         break;
-      }
-      default -> System.out.println("La opción ingresada no es válida: " + selectedOptionTwo);
+      case "4":
+        // Salir del programa
+        exitProgram();
+        break;
+      default:
+        printInvalid(selectedOptionTwo);
+        break;
     }
   }
 
-  public static void printLogout() {
+  private static void printLogout() {
     System.out.print("¡Adios!\n");
   }
 
-  public static void printInvalid() {
-    System.out.print("Por favor, selecciona una opción válida\n");
+  private static void printInvalid(String selection) {
+    System.out.printf("La opción %s ingresada no es válida\n", selection);
   }
 
   public static void main(String[] args) {
@@ -153,26 +206,29 @@ public class Menu {
 
     // Inicia menú
     printStepsOne();
-    int selectedOptionOne = Integer.parseInt(scanner.nextLine());
 
-    while (!exitProgram) {
+    scanner = new Scanner(System.in);
+    String selectedOptionOne = scanner.nextLine();
+
+    while(!exitProgram) {
       switch (selectedOptionOne) {
-        case 1 -> {
+        case "1":
           // Usar stack existente
           currentStack = stack1;
-          initRegisterOrLogin();
-        }
-        case 2 -> {
+          showRegisterOrLoginOptions();
+          break;
+        case "2":
           // Usar nuevo stack
           currentStack = new Stack();
-          printStepsTwo();
-          initRegisterOrLogin();
-        }
-        case 3 -> {
-          printLogout();
-          exitProgram = true;
-        }
-        default -> printInvalid();
+          showRegisterOrLoginOptions();
+          break;
+        case "3":
+          exitProgram();
+          break;
+        default:
+          printInvalid(selectedOptionOne);
+          exitProgram();
+          break;
       }
     }
   }
