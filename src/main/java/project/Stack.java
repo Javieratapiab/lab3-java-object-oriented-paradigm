@@ -25,13 +25,19 @@ public class Stack {
     this.labels = labels;
   }
 
-  public void addUser(User user) {
+  public void addUser(String name, String password) {
+    User user = new User (name, password);
     this.users = new ArrayList<>(this.users);
     this.users.add(user);
   }
 
-  public void addLoggedUser(User user) {
+  public void setLoggedUser(String name, String password) {
+    User user = new User (name, password);
     this.loggedUser = user;
+  }
+
+  public void setLoggedUser() {
+    this.loggedUser = null;
   }
 
   /**
@@ -39,6 +45,10 @@ public class Stack {
    */
   public List<User> getUsers() {
     return this.users;
+  }
+
+  public User getLoggedUser() {
+    return this.loggedUser;
   }
 
   public boolean validateUser(String name) {
@@ -62,21 +72,32 @@ public class Stack {
     return false;
   }
 
+  public boolean validateUser(String name, String password, boolean logged) {
+    if (this.loggedUser == null) return false;
+    boolean equalName = this.loggedUser.getName().equals(name);
+    boolean equalPassword = this.loggedUser.getPassword().equals(password);
+    return (equalName && equalPassword);
+  }
+
   /**
    * @param name
    * @param password
    */
   public boolean register(String name, String password) {
-    User newUser = new User(name, password);
     if (validateUser(name)) return false;
-    addUser(newUser);
+    addUser(name, password);
     return true;
   }
 
   public boolean login(String name, String password) {
-    User newUser = new User(name, password);
     if (!validateUser(name, password)) return false;
-    addLoggedUser(newUser);
+    setLoggedUser(name, password);
+    return true;
+  }
+
+  public boolean logout(String name, String password) {
+    if (!validateUser(name, password, true)) return false;
+    setLoggedUser();
     return true;
   }
 }
