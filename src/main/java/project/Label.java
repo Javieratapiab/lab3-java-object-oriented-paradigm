@@ -1,11 +1,11 @@
 package project;
 
 public class Label {
-  private String _name;
-  private String _description;
+  private String name;
+  private String description;
 
   public Label(String name, String description) {
-    _name = name;
-    _description = description;
+    this.name = name;
+    this.description = description;
   }
 }
