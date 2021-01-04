@@ -65,7 +65,19 @@ public class Question {
     * @return Lista de respuestas asociadas a una pregunta
     */
    public List<Answer> getAnswers() {
-      return answers;
+      return this.answers;
+   }
+
+   public List<Label> getLabels() {
+      return this.labels;
+   }
+
+   public String getTitle() {
+      return this.title;
+   }
+
+   public String getContent() {
+      return this.content;
    }
 
    /**
@@ -74,6 +86,21 @@ public class Question {
     *               asociadas a una pregunta
     */
    public void addAnswer(Answer answer) {
-      answers.add(answer);
+      this.answers.add(answer);
+   }
+
+   @Override
+   public String toString() {
+      return "Question{" +
+              "id=" + id +
+              ", título='" + title + '\'' +
+              ", contenido='" + content + '\'' +
+              ", fecha de publicación=" + publicationDate +
+              ", autor='" + author + '\'' +
+              ", estado='" + status + '\'' +
+              ", recompensa=" + reward +
+              ", respuestas=" + answers +
+              ", etiquetas=" + labels +
+              "}\n";
    }
 }
