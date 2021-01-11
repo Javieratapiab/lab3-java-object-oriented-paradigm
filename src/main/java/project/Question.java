@@ -11,8 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Adicionalmente, se setean atributos por defecto como: Status, reward,
  * listado de respuestas y listado de etiquetas (listas vacías).
  * Relaciones: Relación de agregación: Answer (respuestas) y Label (etiquetas).
- * @version 1, 13/01/21
- * @author Javiera Tapia
  */
 public class Question {
    private static final AtomicInteger count = new AtomicInteger(0);
@@ -22,9 +20,9 @@ public class Question {
    private Date publicationDate;
    private String author;
    private String status;
-   private int reward;
    private List<Answer> answers;
    private List<Label> labels;
+   private List<Reward> rewards;
 
    /**
     * Crea una pregunta a partir de un autor, título y contenido
@@ -39,6 +37,7 @@ public class Question {
       this.content = content;
       this.publicationDate = new Date();
       this.status = "Abierta";
+      this.rewards = new ArrayList<Reward>();
       this.answers = new ArrayList<Answer>();
       this.labels = new ArrayList<Label>();
    }
@@ -49,6 +48,7 @@ public class Question {
     * @param content Contenido de una pregunta
     * @param labels Lista de etiquetas
     */
+
    public Question(String author, String title, String content, List<Label> labels) {
       this.id = count.incrementAndGet();
       this.author = author;
@@ -56,6 +56,7 @@ public class Question {
       this.content = content;
       this.publicationDate = new Date();
       this.status = "Abierta";
+      this.rewards = new ArrayList<Reward>();
       this.answers = new ArrayList<Answer>();
       this.labels = labels;
    }
@@ -65,19 +66,23 @@ public class Question {
     * @return Lista de respuestas asociadas a una pregunta
     */
    public List<Answer> getAnswers() {
-      return this.answers;
+      return answers;
    }
 
    public List<Label> getLabels() {
-      return this.labels;
+      return labels;
    }
 
    public String getTitle() {
-      return this.title;
+      return title;
    }
 
    public String getContent() {
-      return this.content;
+      return content;
+   }
+
+   public String getAuthor() {
+      return author;
    }
 
    /**
@@ -86,7 +91,11 @@ public class Question {
     *               asociadas a una pregunta
     */
    public void addAnswer(Answer answer) {
-      this.answers.add(answer);
+      answers.add(answer);
+   }
+
+   public void addReward(Reward reward) {
+      rewards.add(reward);
    }
 
    @Override
@@ -95,12 +104,12 @@ public class Question {
               "id=" + id +
               ", título='" + title + '\'' +
               ", contenido='" + content + '\'' +
-              ", fecha de publicación=" + publicationDate +
+              ", fecha publicación=" + publicationDate +
               ", autor='" + author + '\'' +
               ", estado='" + status + '\'' +
-              ", recompensa=" + reward +
               ", respuestas=" + answers +
               ", etiquetas=" + labels +
-              "}\n";
+              ", recompensas=" + rewards +
+              '}';
    }
 }

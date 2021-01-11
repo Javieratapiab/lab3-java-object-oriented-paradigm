@@ -20,4 +20,14 @@ public class Answer {
   public String getAuthor() {
     return author;
   }
+
+  @Override
+  public String toString() {
+    return "Answer{" +
+            "id=" + id +
+            ", autor='" + author + '\'' +
+            ", fecha de publicación=" + publicationDate +
+            ", contenido='" + content + '\'' +
+            '}';
+  }
 }

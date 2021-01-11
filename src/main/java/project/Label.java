@@ -20,8 +20,8 @@ public class Label {
   @Override
   public String toString() {
     return "Label{" +
-            "name='" + name + ", " +
-            ", description='" + description + ", " +
-            "}\n";
+            "name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            '}';
   }
 }

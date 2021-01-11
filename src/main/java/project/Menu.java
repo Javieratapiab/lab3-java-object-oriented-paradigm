@@ -1,188 +1,157 @@
 package project;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
-  // Variables para menú
   private static boolean exitProgram = false;
-  private static boolean showStepsTwo = true;
-  private static boolean showStepsThree = true;
-  private static Scanner scanner = new Scanner(System.in);
+  private static final Scanner scanner = new Scanner(System.in);
   private static Stack currentStack;
-  private static Stack stack1;
-  private static User user1;
-  private static User user2;
-  private static User user3;
-  private static User user4;
-  private static Label label1;
-  private static Label label2;
-  private static Label label3;
-  private static Question question1;
-  private static Question question2;
-  private static Question question3;
-  private static Question question4;
-  private static Question question5;
-  private static Answer answer1;
-  private static Answer answer2;
-  private static Answer answer3;
-  private static Answer answer4;
-  private static Answer answer5;
-  private static Answer answer6;
-  private static Answer answer7;
-  private static Answer answer8;
-  private static Answer answer9;
-  private static Answer answer10;
 
-  /**
-   * @param args Argumentos de entrada del programa
-   */
+
   public static void main(String[] args) {
-    // Carga data inicial
-    loadData();
     // Inicia menú
-    printStepsOne();
+    menuPrincipal();
+  }
 
-    scanner = new Scanner(System.in);
-    String selectedOptionOne = scanner.nextLine();
+  private static void printMenuHeader() {
+    System.out.print("\n### SISTEMA DE PREGUNTAS Y RESPUESTAS ###\n");
+    if (currentStack != null) {
+      System.out.printf(currentStack.toString());
+    }
+  }
 
+  public static void menuPrincipal() {
     while(!exitProgram) {
+      printMenuHeader();
+      System.out.print("1. Empezar con un Stack existente\n");
+      System.out.print("2. Crear un Stack desde cero\n");
+      System.out.print("3. Salir del programa\n");
+      System.out.print("ESCOJA UNA OPCIÓN:\n");
+
+      String selectedOptionOne = scanner.nextLine();
+
       switch (selectedOptionOne) {
         case "1":
           // Usar stack existente
-          currentStack = stack1;
-          showRegisterOrLoginOptions();
+          currentStack = buildStack();
+          registerAndLoginMenu();
           break;
         case "2":
           // Usar nuevo stack
           currentStack = new Stack();
-          showRegisterOrLoginOptions();
+          registerAndLoginMenu();
           break;
         case "3":
           // Salir del programa
-          exitProgram();
+          exitProgram = true;
+          scanner.close();
           break;
         default:
           // Opción inválida
-          printInvalid(selectedOptionOne);
-          exitProgram();
-          break;
+          System.out.printf("Tu opción no es válida. Selecciona un número entre 1 a 3. \n");
       }
     }
   }
 
-  /**
-   * Método de clase estático que carga data de prueba
-   */
-  private static void loadData() {
+  private static Stack buildStack() {
     // Usuarios
-    user1 = new User("Pepsi", "pa$$");
-    user2 = new User("Coca Cola", "12345");
-    user3 = new User("Canada Dry","myPass");
-    user4 = new User("Inca Cola", "mySuperPa$$");
+    User user1 = new User("Pepsi", "pa$$");
+    User user2 = new User("Coca Cola", "12345");
+    User user3 = new User("Canada Dry","myPass");
+    User user4 = new User("Inca Cola", "mySuperPa$$");
 
     // Labels
-    label1 = new Label("Java", "Lenguaje de programación");
-    label2 = new Label("Computer science", "Ciencia que estudia a los computadores");
-    label3 = new Label("C#", "Lenguaje de programación");
+    Label label1 = new Label("Java", "Lenguaje de programación");
+    Label label2 = new Label("Computer science", "Ciencia que estudia a los computadores");
+    Label label3 = new Label("C#", "Lenguaje de programación");
 
     // Preguntas
-    question1 = new Question("Canada Dry", "¿Qué es un arreglo?",
-            "Me gustaría saber qué es un arreglo en Java", new ArrayList<>(Arrays.asList(label1, label2)));
-    question2 = new Question("Inca Cola", "¿Cómo hacer un for loop en Java?",
-            "No sé cómo hacer un for loop en Java", new ArrayList<>(Arrays.asList(label1, label2)));
-    question3 = new Question("Pepsi", "¿Cuál es la diferencia entre un método y una función?",
-            "No sé cómo hacer un for loop en Java", new ArrayList<>(Arrays.asList(label1, label2)));
-    question4 = new Question("Canada Dry", "¿De qué se trata el criterio de cohesión?",
-            "Me gustaría entender cómo funciona este concepto en OOP", Collections.singletonList(label2));
-    question5 = new Question("Coca Cola", "¿Cómo empezar en Unity?",
-            "Quiero programar videojuegos.", new ArrayList<>(Arrays.asList(label2, label3)));
+    Question question1 = new Question("Canada Dry", "¿Qué es un arreglo?",
+            "Me gustaría saber qué es un arreglo en Java", new ArrayList<Label>(Arrays.asList(label1, label2)));
+    Question question2 = new Question("Inca Cola", "¿Cómo hacer un for loop en Java?",
+            "No sé cómo hacer un for loop en Java", new ArrayList<Label>(Arrays.asList(label1, label2)));
+    Question question3 = new Question("Pepsi", "¿Cuál es la diferencia entre un método y una función?",
+            "No sé cómo hacer un for loop en Java", new ArrayList<Label>(Arrays.asList(label1, label2)));
+    Question question4 = new Question("Canada Dry", "¿De qué se trata el criterio de cohesión?",
+            "Me gustaría entender cómo funciona este concepto en OOP", new ArrayList<>(Arrays.asList(label2)));
+    Question question5 = new Question("Coca Cola", "¿Cómo empezar en Unity?",
+            "Quiero programar videojuegos.", new ArrayList<Label>(Arrays.asList(label2, label3)));
 
     // Respuestas
     // Answer answer1 = new Answer(1, "Inca Cola", "Una arreglo es una estructura de dato que se encarga de reservar espacio en memoria para una colección de elementos");
 
     // Stack
-    stack1 = new Stack(
+    Stack stack1 = new Stack(
             new ArrayList<>(Arrays.asList(user1, user2, user3, user4)),
             new ArrayList<>(Arrays.asList(question1, question2, question3, question4, question5)),
             new ArrayList<>(Arrays.asList(label1, label2, label3)));
+
+    return stack1;
   }
 
-  /**
-   * Método de clase estático que imprime cabecera del menú y stack elegido
-   */
-  private static void printHeader() {
-    System.out.print("### SISTEMA DE PREGUNTAS Y RESPUESTAS ###\n");
-    if (currentStack != null) {
-      System.out.print(currentStack.toString());
+  private static void registerAndLoginMenu() {
+    while(!exitProgram) {
+      String username;
+      String password;
+
+      printMenuHeader();
+      System.out.print("1. Registrar un usuario\n");
+      System.out.print("2. Loguear un usuario\n");
+      System.out.print("3. Cerrar sesión\n");
+      System.out.print("4. Salir del programa\n");
+      System.out.print("ESCOJA UNA OPCIÓN:\n");
+
+      String selectedOptionTwo = scanner.nextLine();
+
+      switch (selectedOptionTwo) {
+        case "1":
+          // Registrar usuario
+          System.out.println("Ingresa nombre de usuario:");
+          username = scanner.nextLine();
+          System.out.println("Ingresa password:");
+          password = scanner.nextLine();
+          boolean registerSuccess = currentStack.register(username, password);
+          if (registerSuccess) {
+            System.out.printf("\nRESULTADO: El usuario %s ha sido registrado correctamente\n", username);
+          } else {
+            System.out.printf("\nRESULTADO: El usuario %s ya existe. Intenta con otro nombre\n", username);
+          }
+          break;
+        case "2":
+          // Loguear usuario
+          System.out.println("Ingresa nombre de usuario:");
+          username = scanner.nextLine();
+          System.out.println("Ingresa password:");
+          password = scanner.nextLine();
+          boolean loginSuccess = currentStack.login(username, password);
+          if (loginSuccess) {
+            System.out.printf("\nRESULTADO: El usuario %s ha sido logueado correctamente\n", username);
+            loggedUserMenu();
+          } else {
+            System.out.printf("\nRESULTADO: Credenciales incorrectas. Intenta nuevamente\n");
+          }
+          break;
+        case "3":
+          // Cerrar sesión
+          setLogout();
+          menuPrincipal();
+          break;
+        case "4":
+          // Salir del programa
+          exitProgram = true;
+          scanner.close();
+          break;
+        default:
+          // Opción no válida
+          System.out.printf("Tu opción no es válida. Selecciona un número entre 1 y 4\n");
+          break;
+      }
     }
   }
 
-  /**
-   * Método de clase estático que imprime primera sección del menú
-   */
-  private static void printStepsOne() {
-    printHeader();
-    System.out.print("1. Empezar con un Stack existente\n");
-    System.out.print("2. Crear un Stack desde cero\n");
-    System.out.print("3. Salir del programa\n");
-    System.out.print("ESCOJA UNA OPCIÓN:\n");
-  }
-
-  /**
-   * Método de clase estático que imprime segunda sección del menú
-   */
-  private static void printStepsTwo() {
-    printHeader();
-    if (currentStack.getLoggedUser() != null) {
-      System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
-    }
-    System.out.print("1. Registrar un usuario\n");
-    System.out.print("2. Loguear un usuario\n");
-    System.out.print("3. Cerrar sesión\n");
-    System.out.print("4. Salir del programa\n");
-    System.out.print("ESCOJA UNA OPCIÓN:\n");
-  }
-
-  /**
-   * Método de clase estático que imprime tercera sección del menú
-   */
-  private static void printStepsThree() {
-    printHeader();
-    if (currentStack.getLoggedUser() != null) {
-      System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
-    }
-    System.out.print("1. Agregar nueva pregunta\n");
-    System.out.print("2. Responder pregunta\n");
-    System.out.print("3. Dar recompensa\n");
-    System.out.print("4. Aceptar respuesta\n");
-    System.out.print("5. Crear etiqueta\n");
-    System.out.print("6. Cerrar sesión\n");
-    System.out.print("7. Salir del programa\n");
-    System.out.print("ESCOJA UNA OPCIÓN:\n");
-  }
-
-  /**
-   * Método de clase estático que muestra en menú que una opción seleccionada no es válida
-   * @param selection Opción seleccionada en el menú no válida
-   */
-  private static void printInvalid(String selection) {
-    System.out.printf("La opción %s ingresada no es válida\n", selection);
-  }
-
-  /**
-   * Método estático que muestra mensaje de despedida y cambia flag (exitProgram) a true para salir del while loop
-   * de menú interactivo.
-   */
-  private static void exitProgram() {
-    exitProgram = true;
-    System.out.print("¡Adios!\n");
-  }
-
-  /**
-   * Método de clase que muestra al usuario las etiquetas disponibles en el stack que pueden ser elegidas
-   * para la creación de una pregunta
-   * @return Lista de etiquetas del stack que serán usadas para la creación de una pregunta
-   */
   private static List<Label> selectLabels() {
     List<Label> selectedLabels = new ArrayList<Label>();
 
@@ -192,7 +161,9 @@ public class Menu {
       System.out.printf("Etiqueta: %s, descripción: %s \n", label.getName(), label.getDescription());
       System.out.printf("1. Agregar\n");
       System.out.printf("2. No agregar\n");
+
       String acceptedLabel = scanner.nextLine();
+
       switch (acceptedLabel) {
         case "1":
           selectedLabels.add(label);
@@ -202,28 +173,23 @@ public class Menu {
           System.out.printf("Etiqueta: %s no se agrega a la pregunta\n", label.getName());
           continue;
         default:
-          printInvalid(acceptedLabel);
+          System.out.printf("Tu opción no es válida. Selecciona un número entre 1 y 2\n");
           break;
       }
     }
     return selectedLabels;
   }
 
-  /**
-   * Método de clase que muestra al usuario las etiquetas disponibles en el stack que pueden ser elegidas
-   * para la creación de una pregunta.
-   * @return Lista de etiquetas del stack que serán usadas para la creación de una pregunta
-   */
-  private static Question selectQuestion() {
+  private static Question selectQuestion(List <Question> questions) {
     Question selectedQuestion = null;
 
-    System.out.print("Elija una de las siguientes pregunta: \n");
+    System.out.print("Elija una de las siguientes preguntas: \n");
 
-    for(Question question : currentStack.getQuestions()) {
+    for(Question question : questions) {
       if (selectedQuestion == null) {
-        System.out.printf("Pregunta: %s", question.toString());
-        System.out.printf("1. Seleccionar\n");
-        System.out.printf("2. Continuar\n");
+        System.out.printf("Pregunta: %s\n", question.toString());
+        System.out.print("1. Seleccionar\n");
+        System.out.print("2. Continuar\n");
 
         String acceptedQuestion = scanner.nextLine();
 
@@ -235,7 +201,7 @@ public class Menu {
           case "2":
             continue;
           default:
-            printInvalid(acceptedQuestion);
+            System.out.printf("Tu opción no es válida. Selecciona un número entre 1 y 2\n");
             break;
         }
       }
@@ -243,17 +209,53 @@ public class Menu {
     return selectedQuestion;
   }
 
-  /**
-   * Método de clase estático que muestra opciones disponibles luego de loguear un usuario registrado,
-   * permite la creación de una pregunta, respuesta, aceptar respuesta, crear etiquetas, etc.
-   */
-  private static void showOptionsForLoggedUser() {
-    while(!exitProgram && currentStack.getLoggedUser() != null) {
-      // Imprime instrucciones
-      if (showStepsThree) {
-        printStepsThree();
+  private static Answer selectAnswer(List<Answer> answers) {
+    Answer selectedAnswer = null;
+
+    System.out.print("\nElija una de las siguientes respuestas: \n");
+
+    for(Answer answer : answers) {
+      if (selectedAnswer == null) {
+        System.out.printf("Respuesta: %s\n", answer.toString());
+        System.out.print("1. Seleccionar\n");
+        System.out.print("2. Continuar\n");
+
+        String acceptedAnswer = scanner.nextLine();
+
+        switch (acceptedAnswer) {
+          case "1":
+            selectedAnswer = answer;
+            System.out.printf("\nHas seleccionado la siguiente respuesta: %s\n", answer.toString());
+            break;
+          case "2":
+            continue;
+          default:
+            System.out.printf("\nTu opción no es válida. Selecciona un número entre 1 y 2\n");
+            break;
+        }
       }
-      scanner = new Scanner(System.in);
+    }
+    return selectedAnswer;
+  }
+
+  private static void loggedUserMenu() {
+    while(!exitProgram) {
+      Question selectedQuestion;
+      Answer selectedAnswer;
+
+      printMenuHeader();
+      if (currentStack.getLoggedUser() != null) {
+        System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
+      }
+      System.out.print("1. Agregar nueva pregunta\n");
+      System.out.print("2. Responder pregunta\n");
+      System.out.print("3. Dar recompensa\n");
+      System.out.print("4. Aceptar respuesta\n");
+      System.out.print("5. Crear etiqueta\n");
+      System.out.print("6. Cerrar sesión\n");
+      System.out.print("7. Salir del programa\n");
+      System.out.print("ESCOJA UNA OPCIÓN:\n");
+
       String selectedOptionThree = scanner.nextLine();
 
       switch (selectedOptionThree) {
@@ -266,124 +268,85 @@ public class Menu {
           List<Label> selectedLabels = selectLabels();
           boolean askSuccess = currentStack.ask(title, content, selectedLabels);
           if (askSuccess) {
-            System.out.printf("La pregunta ha sido creada exitosamente\n");
+            System.out.printf("\nRESULTADO: La pregunta ha sido creada exitosamente\n");
           } else {
-            System.out.printf("La creación de pregunta ha fallado. Inténtalo nuevamente\n");
+            System.out.printf("\nRESULTADO: La creación de pregunta ha fallado. Inténtalo nuevamente\n");
           }
-          showStepsThree = true;
           break;
         case "2":
           // Responder pregunta (Answer)
-          Question selectedQuestion = selectQuestion();
-          System.out.printf("Contenido de la respuesta: \n");
-          String answerContent = scanner.nextLine();
-          boolean answerSuccess = currentStack.answer(selectedQuestion, answerContent);
-          if (answerSuccess) {
-            System.out.printf("La respuesta ha sido creada exitosamente\n");
+          selectedQuestion = selectQuestion(currentStack.getQuestions());
+          if (selectedQuestion == null) {
+            System.out.print("No has seleccionado ninguna pregunta. Inténtalo nuevamente\n");
           } else {
-            System.out.printf("La creación de respuesta ha fallado. Inténtalo nuevamente\n");
+            System.out.printf("Contenido de la respuesta: \n");
+            String answerContent = scanner.nextLine();
+            boolean answerSuccess = currentStack.answer(selectedQuestion, answerContent);
+            if (answerSuccess) {
+              System.out.print("\nRESULTADO: La respuesta ha sido creada exitosamente\n");
+            } else {
+              System.out.printf("\nRESULTADO: La creación de respuesta ha fallado. Inténtalo nuevamente\n");
+            }
           }
-          showStepsThree = true;
           break;
         case "3":
           // Dar recompensa (Reward)
+          selectedQuestion = selectQuestion(currentStack.getQuestions());
+          System.out.printf("\nIngrese una recompensa (puntos): \n");
+          int rewardQuantity = scanner.nextInt();
+          scanner.nextLine();
+          boolean rewardSuccess = currentStack.reward(selectedQuestion, rewardQuantity);
+          if (rewardSuccess) {
+            System.out.print("\nRESULTADO: La recompensa ha sido creada exitosamente\n");
+          } else {
+            System.out.print("\nRESULTADO: La entrega de recompensa ha fallado. Inténtalo nuevamente\n");
+          }
           break;
         case "4":
           // Aceptar respuesta (Accept)
+          List<Question> filteredQuestions = currentStack.filterQuestionsByLoggedUser();
+          selectedQuestion = selectQuestion(filteredQuestions);
+          if (selectedQuestion == null) {
+            System.out.print("\nNo has seleccionado ninguna pregunta. Inténtalo nuevamente\n");
+          } else {
+            selectedAnswer = selectAnswer(selectedQuestion.getAnswers());
+            if (selectedAnswer == null) {
+              System.out.print("\nNo has seleccionado ninguna respuesta. Inténtalo nuevamente\n");
+            } else {
+              boolean acceptSuccess = currentStack.accept(selectedQuestion, selectedAnswer);
+              if (acceptSuccess) {
+                System.out.print("\nRESULTADO: La respuesta ha sido aceptada exitosamente\n");
+              } else {
+                System.out.print("\nRESULTADO: No se ha podido aceptar la respuesta. Inténtalo nuevamente\n");
+              }
+            }
+          }
           break;
         case "5":
           // Agregar una etiqueta
         case "6":
           // Cerrar sesión
-          showStepsTwo = true;
           setLogout();
+          registerAndLoginMenu();
           break;
         case "7":
           // Salir del programa
-          exitProgram();
+          exitProgram = true;
+          scanner.close();
           break;
         default:
-          showStepsTwo = true;
-          printInvalid(selectedOptionThree);
+          System.out.printf("\nTu opción no es válida. Selecciona un número entre 1 y 7\n");
           break;
       }
     }
   }
 
-  /**
-   * Método estático que pide credenciales para cerrar sesión y elimina sesión activa (stack logout)
-   * si las credenciales son correctas.
-   */
   private static void setLogout() {
-    System.out.println("Ingresa nombre de usuario:");
-    String username = scanner.nextLine();
-    System.out.println("Ingresa password:");
-    String password = scanner.nextLine();
-    boolean logoutSuccess = currentStack.logout(username, password);
+    boolean logoutSuccess = currentStack.logout();
     if (logoutSuccess) {
-      System.out.printf("El usuario %s ha sido deslogueado correctamente\n", username);
+      System.out.printf("\nRESULTADO: Has sido deslogueado exitosamente\n");
     } else {
-      System.out.printf("El usuario %s no se encuentra logueado. Intenta con otro nombre\n", username);
-    }
-  }
-
-  /**
-   * Método de clase estático que muestra las opciones disponibles posterior a la elección de un stack,
-   * si un usuario se loguea correctamente se mostrarán en consola las opciones disponibles para una sesión activa
-   * (preguntar, responder, aceptar, ofrecer recompensa, crear etiquetas, etc).
-   */
-  private static void showRegisterOrLoginOptions() {
-    String username;
-    String password;
-
-    while(showStepsTwo && !exitProgram) {
-      printStepsTwo();
-      scanner = new Scanner(System.in);
-      String selectedOptionTwo = scanner.nextLine();
-
-      switch (selectedOptionTwo) {
-        case "1":
-          // Registrar usuario
-          System.out.println("Ingresa nombre de usuario:");
-          username = scanner.nextLine();
-          System.out.println("Ingresa password:");
-          password = scanner.nextLine();
-          boolean registerSuccess = currentStack.register(username, password);
-          if (registerSuccess) {
-            System.out.printf("El usuario %s ha sido registrado correctamente\n", username);
-          } else {
-            System.out.printf("El usuario %s ya existe. Intenta con otro nombre\n", username);
-          }
-          break;
-        case "2":
-          // Loguear usuario
-          System.out.println("Ingresa nombre de usuario:");
-          username = scanner.nextLine();
-          System.out.println("Ingresa password:");
-          password = scanner.nextLine();
-          boolean loginSuccess = currentStack.login(username, password);
-          if (loginSuccess) {
-            showStepsTwo = false;
-            System.out.printf("El usuario %s ha sido logueado correctamente\n", username);
-            showOptionsForLoggedUser();
-          } else {
-            System.out.printf("Credenciales incorrectas. Intenta nuevamente\n");
-          }
-          break;
-        case "3":
-          // Cerrar sesión
-          setLogout();
-          break;
-        case "4":
-          // Salir del programa
-          exitProgram();
-          break;
-        default:
-          // Opción no válida
-          System.out.printf("La opción %s ingresada no es válida\n", selectedOptionTwo);
-          printInvalid(selectedOptionTwo);
-          break;
-      }
+      System.out.printf("\nRESULTADO: Cierre de sesión inválido, no hay usuarios logueados.\n");
     }
   }
 }

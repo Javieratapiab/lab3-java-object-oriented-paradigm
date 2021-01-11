@@ -9,24 +9,13 @@ public class Stack {
   private List<Question> questions;
   private List<Label> labels;
 
-  /**
-   * TODO: DOCUMENTAR CONSTRUCTOR
-   * Constructor de Stack
-   */
   public Stack() {
     this.loggedUser = null;
-    this.users = new ArrayList<>();
-    this.questions = new ArrayList<>();
-    this.labels = new ArrayList<>();
+    this.users = new ArrayList<User>();
+    this.questions = new ArrayList<Question>();
+    this.labels = new ArrayList<Label>();
   }
 
-  /**
-   * TODO: DOCUMENTAR CONSTRUCTOR
-   * Constructor de Stack (sobrecarga)
-   * @param users
-   * @param questions
-   * @param labels
-   */
   public Stack(List<User> users,
                List<Question> questions,
                List<Label> labels) {
@@ -36,64 +25,44 @@ public class Stack {
     this.labels = labels;
   }
 
-  /*
-  * Selectores
-  * */
   public User getLoggedUser() {
-    return this.loggedUser;
+    return loggedUser;
   }
 
   public List<Label> getLabels() {
-    return this.labels;
+    return labels;
   }
 
   public List<Question> getQuestions() {
-    return this.questions;
+    return questions;
   }
 
   private void addQuestion(Question question) {
-    this.questions = new ArrayList<>(this.questions);
-    this.questions.add(question);
+    questions = new ArrayList<>(questions);
+    questions.add(question);
   }
 
   public void addUser(String name, String password) {
-    this.users = new ArrayList<>(this.users);
-    this.users.add(new User (name, password));
+    users = new ArrayList<>(users);
+    users.add(new User (name, password));
   }
 
   private void setLoggedUser(String name, String password) {
-    this.loggedUser = new User(name, password);
+    loggedUser = new User(name, password);
   }
 
-  private void setLoggedUser() {
-    this.loggedUser = null;
-  }
-
-  /**
-   * TODO: DOCUMENTAR MÉTODO
-   * @param name
-   * @return
-   */
   private boolean validateUser(String name) {
-    for(int i = 0; i < this.users.size(); i++) {
-      boolean equalName = this.users.get(i).getName().equals(name);
-      if (equalName) {
-        return true;
-      }
+    for(User user : users) {
+      boolean equalName = user.getName().equals(name);
+      if (equalName) { return true; }
     }
     return false;
   }
 
-  /**
-   * TODO: DOCUMENTAR MÉTODO
-   * @param name
-   * @param password
-   * @return
-   */
   private boolean validateUser(String name, String password) {
-    for(int i = 0; i < this.users.size(); i++) {
-      boolean equalName = this.users.get(i).getName().equals(name);
-      boolean equalPassword = this.users.get(i).getPassword().equals(password);
+    for(User user : users) {
+      boolean equalName = user.getName().equals(name);
+      boolean equalPassword = user.getPassword().equals(password);
       if (equalName && equalPassword) {
         return true;
       }
@@ -101,122 +70,73 @@ public class Stack {
     return false;
   }
 
-  /**
-   * Método de instancia privado que valida usuario logueado en el stack
-   * @param name Nombre de usuario a validar
-   * @param password Password de usuario a validar
-   * @return boolean, true si el usuario fue registrado previamente,
-   * false si usuario no se encuentra asociado al stack.
-   */
-  private boolean validateLoggedUser(String name, String password) {
-    if (this.loggedUser == null) return false;
-    boolean equalName = this.loggedUser.getName().equals(name);
-    boolean equalPassword = this.loggedUser.getPassword().equals(password);
-    return (equalName && equalPassword);
-  }
-
-  /**
-   * Método de instancia público que registra un usuario y lo agrega
-   * a la lista de usuarios registrados en el stack
-   * @param name Nombre del usuario a registrar
-   * @param password Password del usuario a registrar
-   * @return boolean (operación exitosa (true) o fracaso (false))
-   */
   public boolean register(String name, String password) {
     if (validateUser(name)) return false;
     addUser(name, password);
     return true;
   }
 
-  /**
-   * Método de instancia público que loguea un usuario y lo setea en el stack
-   * retornando operación de éxito o fracaso.
-   * @param name Nombre de usuario que se intenta loguear
-   * @param password Password de usuario que se intenta loguear
-   * @return boolean (operación exitosa (true) o fracaso (false))
-   */
   public boolean login(String name, String password) {
     if (!validateUser(name, password)) return false;
     setLoggedUser(name, password);
     return true;
   }
 
-  /**
-   * Método de instancia público que desloguea un usuario del stack y lo elimina del stack
-   * retornando operación de éxito o fracaso.
-   * @param name Nombre de usuario que se intenta desloguear
-   * @param password Password de usuario que se intenta desloguear
-   * @return boolean (operación exitosa (true) o fracaso (false))
-   */
-  public boolean logout(String name, String password) {
-    if (!validateLoggedUser(name, password)) return false;
-    setLoggedUser();
+  public boolean logout() {
+    if (loggedUser == null) return false;
+    loggedUser = null;
     return true;
   }
 
-  /**
-   * Método de instancia público que permite crear una pregunta y agregarla al stack
-   * @param title Título de una pregunta
-   * @param content Contenido de una pregunta
-   * @param labels Etiquetas asociadas a una pregunta
-   * @return boolean (operación exitosa (true) o fracaso (false))
-   */
   public boolean ask(String title, String content, List<Label> labels) {
-    if (this.loggedUser == null) return false;
-    Question question = new Question(this.loggedUser.getName(), title, content, labels);
+    if (loggedUser == null) return false;
+    Question question = new Question(loggedUser.getName(), title, content, labels);
     addQuestion(question);
     return true;
   }
 
-
   public boolean answer(Question question, String content) {
-    if (this.loggedUser == null) return false;
-    Answer answer = new Answer(this.loggedUser.getName(), content);
+    if (loggedUser == null) return false;
+    Answer answer = new Answer(loggedUser.getName(), content);
     question.addAnswer(answer);
     return true;
   }
 
+  public boolean reward(Question question, int rewardQuantity) {
+    if (loggedUser == null) return false;
+    boolean validatedReputation = loggedUser.validateReputation(rewardQuantity);
+    if (!validatedReputation) return false;
+    loggedUser.addDebtReputation(rewardQuantity);
+    Reward reward = new Reward(rewardQuantity, loggedUser);
+    question.addReward(reward);
+    return true;
+  }
+
+  public boolean accept(Question question, Answer answer) {
+    if (loggedUser == null) return false;
+    return true;
+  }
+
+  public List<Question> filterQuestionsByLoggedUser() {
+    List <Question> result = new ArrayList<Question>();
+    if (loggedUser == null) return result;
+
+    for(Question question : questions) {
+      boolean matchAuthor = loggedUser.getName().equals(question.getAuthor());
+      if (matchAuthor) {
+        result.add(question);
+      }
+    }
+    return result;
+  }
+
   @Override
   public String toString() {
-    String loggedAsString = null;
-    String usersAsString = "";
-    String questionsAsString = "";
-    String labelsAsString = "";
-
-    // Nombres de usuarios registrados
-    for(int i = 0; i < users.size(); i++) {
-      usersAsString = usersAsString + users.get(i).getName();
-      if (i != users.size() - 1) {
-        usersAsString = usersAsString + ", ";
-      }
-    }
-
-    // Títulos de preguntas
-    for(int i = 0; i < questions.size(); i++) {
-      questionsAsString = questionsAsString + questions.get(i).getTitle();
-      if (i != questions.size() - 1) {
-        questionsAsString = questionsAsString + ", ";
-      }
-    }
-
-    // Nombres de etiquetas
-    for(int i = 0; i < labels.size(); i++) {
-      labelsAsString = labelsAsString + labels.get(i).getName();
-      if (i != labels.size() - 1) {
-        labelsAsString = labelsAsString + ", ";
-      }
-    }
-
-    // Usuario logueado
-    if (loggedUser != null) {
-      loggedAsString = loggedUser.getName();
-    }
-
     return "Stack{" +
-            "usuario logueado=" + loggedAsString +
-            ", usuarios=" + usersAsString +
-            ", preguntas=" + questionsAsString +
-            ", etiquetas=" + labelsAsString +
-            "}\n";
+            "loggedUser=" + loggedUser +
+            ", users=" + users +
+            ", questions=" + questions +
+            ", labels=" + labels +
+            '}' + "\n";
   }
 }
