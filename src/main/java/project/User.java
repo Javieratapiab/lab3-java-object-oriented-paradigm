@@ -1,16 +1,16 @@
 package project;
 
-public class User {
-  private String name;
-  private String password;
+class User {
+  private final String name;
+  private final String password;
   private int reputation;
-  private int debtReputation;
+  private int tempReputation;
 
-  public User(String name, String password) {
+  User(String name, String password) {
     this.name = name;
     this.password = password;
-    this.reputation = 30;
-    this.debtReputation = 0;
+    this.reputation = 30; // Se entrega por defecto esta cantidad para operar sobre ella
+    this.tempReputation = 0;
   }
 
   public String getName() {
@@ -22,20 +22,29 @@ public class User {
   }
 
   public boolean validateReputation(int rewardQuantity) {
-    return (reputation + debtReputation > rewardQuantity);
+    return (reputation + tempReputation >= rewardQuantity);
+  }
+
+  public void addOrSubstractReputation(int newReputation) {
+    reputation += newReputation;
   }
 
   public void addDebtReputation(int rewardQuantity) {
-     debtReputation -= rewardQuantity;
+     tempReputation -= rewardQuantity;
+  }
+
+  public void discountReputation(int rewardQuantity) {
+    reputation -= rewardQuantity;
+    tempReputation += rewardQuantity;
   }
 
   @Override
   public String toString() {
     return "User{" +
-            "nombre='" + name + '\'' +
-            ", contrasena='" + password + '\'' +
-            ", reputación=" + reputation +
-            ", reputación descontada (temp)=" + debtReputation +
+            "name='" + name + '\'' +
+            ", password='" + password + '\'' +
+            ", reputation=" + reputation +
+            ", tempReputation=" + tempReputation +
             '}';
   }
 }

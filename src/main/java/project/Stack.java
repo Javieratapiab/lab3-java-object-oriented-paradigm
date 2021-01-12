@@ -3,30 +3,30 @@ package project;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Stack {
-  private User loggedUser;
+class Stack implements Authenticator {
+  private User userLogged;
   private List<User> users;
   private List<Question> questions;
   private List<Label> labels;
 
   public Stack() {
-    this.loggedUser = null;
-    this.users = new ArrayList<User>();
-    this.questions = new ArrayList<Question>();
-    this.labels = new ArrayList<Label>();
+    this.userLogged = null;
+    this.users = new ArrayList<>();
+    this.questions = new ArrayList<>();
+    this.labels = new ArrayList<>();
   }
 
   public Stack(List<User> users,
                List<Question> questions,
                List<Label> labels) {
-    this.loggedUser = null;
+    this.userLogged = null;
     this.users = users;
     this.questions = questions;
     this.labels = labels;
   }
 
   public User getLoggedUser() {
-    return loggedUser;
+    return userLogged;
   }
 
   public List<Label> getLabels() {
@@ -47,8 +47,8 @@ public class Stack {
     users.add(new User (name, password));
   }
 
-  private void setLoggedUser(String name, String password) {
-    loggedUser = new User(name, password);
+  private void setLoggedUser(User user) {
+    userLogged = user;
   }
 
   private boolean validateUser(String name) {
@@ -78,51 +78,110 @@ public class Stack {
 
   public boolean login(String name, String password) {
     if (!validateUser(name, password)) return false;
-    setLoggedUser(name, password);
+    for (User user : users) {
+      if (user.getName().equals(name) && user.getPassword().equals(password)) {
+        setLoggedUser(user);
+        break;
+      }
+    }
     return true;
   }
 
   public boolean logout() {
-    if (loggedUser == null) return false;
-    loggedUser = null;
+    if (userLogged == null) return false;
+    userLogged = null;
     return true;
   }
 
   public boolean ask(String title, String content, List<Label> labels) {
-    if (loggedUser == null) return false;
-    Question question = new Question(loggedUser.getName(), title, content, labels);
+    if (userLogged == null) return false;
+    Question question = new Question(userLogged, title, content);
+    for(Label label: labels) {
+      question.addLabel(label);
+    }
     addQuestion(question);
     return true;
   }
 
   public boolean answer(Question question, String content) {
-    if (loggedUser == null) return false;
-    Answer answer = new Answer(loggedUser.getName(), content);
+    if (userLogged == null) return false;
+    Answer answer = new Answer(userLogged, content);
     question.addAnswer(answer);
     return true;
   }
 
   public boolean reward(Question question, int rewardQuantity) {
-    if (loggedUser == null) return false;
-    boolean validatedReputation = loggedUser.validateReputation(rewardQuantity);
+    if (userLogged == null) return false;
+    if (question.getStatus().equals("Cerrada")) return false;
+    boolean validatedReputation = userLogged.validateReputation(rewardQuantity);
     if (!validatedReputation) return false;
-    loggedUser.addDebtReputation(rewardQuantity);
-    Reward reward = new Reward(rewardQuantity, loggedUser);
+    userLogged.addDebtReputation(rewardQuantity);
+    Reward reward = new Reward(rewardQuantity, userLogged);
     question.addReward(reward);
     return true;
   }
 
   public boolean accept(Question question, Answer answer) {
-    if (loggedUser == null) return false;
+    if (userLogged == null) return false;
+    question.setStatus("Cerrada");
+    answer.setAcceptationStatus("Sí");
+    userLogged.addOrSubstractReputation(2);
+    answer.getAuthor().addOrSubstractReputation(15);
+    for(Reward reward : question.getRewards()) {
+      reward.getUser().discountReputation(reward.getQuantity());
+    }
+    question.setRewards(new ArrayList<>());
     return true;
   }
 
-  public List<Question> filterQuestionsByLoggedUser() {
-    List <Question> result = new ArrayList<Question>();
-    if (loggedUser == null) return result;
+  public boolean vote(Question question, String voteType) {
+    if (userLogged == null) return false;
+    boolean result;
+
+    switch (voteType) {
+      case "UP" -> {
+        question.addOrSubstractVotes(1);
+        question.getAuthor().addOrSubstractReputation(10);
+        result = true;
+      }
+      case "DOWN" -> {
+        question.addOrSubstractVotes(-1);
+        question.getAuthor().addOrSubstractReputation(-2);
+        result = true;
+      }
+      default -> result = false;
+    }
+
+    return result;
+  }
+
+  public boolean vote(Answer answer, String voteType) {
+    if (userLogged == null) return false;
+    boolean result;
+
+    switch (voteType) {
+      case "UP" -> {
+        answer.addOrSubstractVotes(1);
+        answer.getAuthor().addOrSubstractReputation(10);
+        result = true;
+      }
+      case "DOWN" -> {
+        answer.addOrSubstractVotes(-1);
+        answer.getAuthor().addOrSubstractReputation(-2);
+        userLogged.addOrSubstractReputation(-1);
+        result = true;
+      }
+      default -> result = false;
+    }
+
+    return result;
+  }
+
+  public List<Question> filterQuestionsByUser(User user) {
+    List <Question> result = new ArrayList<>();
 
     for(Question question : questions) {
-      boolean matchAuthor = loggedUser.getName().equals(question.getAuthor());
+      boolean matchAuthor = user.getName().equals(question.getAuthor().getName());
       if (matchAuthor) {
         result.add(question);
       }
@@ -133,7 +192,7 @@ public class Stack {
   @Override
   public String toString() {
     return "Stack{" +
-            "loggedUser=" + loggedUser +
+            "userLogged=" + userLogged +
             ", users=" + users +
             ", questions=" + questions +
             ", labels=" + labels +

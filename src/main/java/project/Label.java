@@ -1,10 +1,10 @@
 package project;
 
-public class Label {
-  private String name;
-  private String description;
+class Label {
+  private final String name;
+  private final String description;
 
-  public Label(String name, String description) {
+  Label(String name, String description) {
     this.name = name;
     this.description = description;
   }
