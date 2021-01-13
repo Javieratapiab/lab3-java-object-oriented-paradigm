@@ -3,7 +3,7 @@ package project;
 import java.util.ArrayList;
 import java.util.List;
 
-class Stack implements Authenticator {
+class Stack implements Auth {
   private User userLogged;
   private List<User> users;
   private List<Question> questions;
@@ -45,6 +45,18 @@ class Stack implements Authenticator {
   public void addUser(String name, String password) {
     users = new ArrayList<>(users);
     users.add(new User (name, password));
+  }
+
+  public boolean addLabel(Label newLabel) {
+    boolean unique = true;
+    for (Label label : labels) {
+      if (label.getName().equals(newLabel.getName())) {
+        unique = false;
+        break;
+      }
+    }
+    if (unique) { labels.add(newLabel); }
+    return unique;
   }
 
   private void setLoggedUser(User user) {
@@ -196,6 +208,6 @@ class Stack implements Authenticator {
             ", users=" + users +
             ", questions=" + questions +
             ", labels=" + labels +
-            '}' + "\n";
+            '}' + "\n\n";
   }
 }

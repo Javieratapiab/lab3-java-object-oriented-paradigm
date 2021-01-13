@@ -1,7 +1,6 @@
 package project;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -175,9 +174,9 @@ public class Menu {
           password = scanner.nextLine();
           boolean registerSuccess = currentStack.register(username, password);
           if (registerSuccess) {
-            System.out.printf("\nRESULTADO: El usuario %s ha sido registrado correctamente\n", username);
+            System.out.printf("RESULTADO: El usuario %s ha sido registrado correctamente\n", username);
           } else {
-            System.out.printf("\nRESULTADO: El usuario %s ya existe. Intenta con otro nombre\n", username);
+            System.out.printf("RESULTADO: El usuario %s ya existe. Intenta con otro nombre\n", username);
           }
           break;
         case "2":
@@ -188,19 +187,19 @@ public class Menu {
           password = scanner.nextLine();
           boolean loginSuccess = currentStack.login(username, password);
           if (loginSuccess) {
-            System.out.printf("\nRESULTADO: El usuario %s ha sido logueado correctamente\n", username);
+            System.out.printf("RESULTADO: El usuario %s ha sido logueado correctamente\n", username);
             loggedUserMenu();
           } else {
-            System.out.printf("\nRESULTADO: Credenciales incorrectas. Intenta nuevamente\n");
+            System.out.printf("RESULTADO: Credenciales incorrectas. Intenta nuevamente\n");
           }
           break;
         case "3":
           // Cerrar sesión (LOGOUT)
           boolean logoutSuccess = currentStack.logout();
           if (logoutSuccess) {
-            System.out.printf("\nRESULTADO: Has sido deslogueado exitosamente\n");
+            System.out.printf("RESULTADO: Has sido deslogueado exitosamente\n");
           } else {
-            System.out.printf("\nRESULTADO: Cierre de sesión inválido, no hay usuarios logueados.\n");
+            System.out.printf("RESULTADO: Cierre de sesión inválido, no hay usuarios logueados.\n");
           }
           mainMenu();
           break;
@@ -342,7 +341,7 @@ public class Menu {
 
       printMenuHeader();
       if (currentStack.getLoggedUser() != null) {
-        System.out.printf("\n## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
+        System.out.printf("## Logueado como: %s ##\n", currentStack.getLoggedUser().getName());
       }
       System.out.print("1. Agregar nueva pregunta\n");
       System.out.print("2. Responder pregunta\n");
@@ -366,9 +365,9 @@ public class Menu {
           List<Label> selectedLabels = selectLabels();
           boolean askSuccess = currentStack.ask(title, content, selectedLabels);
           if (askSuccess) {
-            System.out.printf("\nRESULTADO: La pregunta ha sido creada exitosamente\n");
+            System.out.printf("RESULTADO: La pregunta ha sido creada exitosamente\n");
           } else {
-            System.out.printf("\nRESULTADO: La creación de pregunta ha fallado. Inténtalo nuevamente\n");
+            System.out.printf("RESULTADO: La creación de pregunta ha fallado. Inténtalo nuevamente\n");
           }
           break;
         case "2":
@@ -381,23 +380,23 @@ public class Menu {
             String answerContent = scanner.nextLine();
             boolean answerSuccess = currentStack.answer(selectedQuestion, answerContent);
             if (answerSuccess) {
-              System.out.print("\nRESULTADO: La respuesta ha sido creada exitosamente\n");
+              System.out.print("RESULTADO: La respuesta ha sido creada exitosamente\n");
             } else {
-              System.out.printf("\nRESULTADO: La creación de respuesta ha fallado. Inténtalo nuevamente\n");
+              System.out.printf("RESULTADO: La creación de respuesta ha fallado. Inténtalo nuevamente\n");
             }
           }
           break;
         case "3":
           // Crear recompensa (REWARD)
           selectedQuestion = selectQuestion(currentStack.getQuestions());
-          System.out.printf("\nIngrese una recompensa (puntos): \n");
+          System.out.printf("Ingrese una recompensa (puntos): \n");
           int rewardQuantity = scanner.nextInt();
           scanner.nextLine();
           boolean rewardSuccess = currentStack.reward(selectedQuestion, rewardQuantity);
           if (rewardSuccess) {
-            System.out.print("\nRESULTADO: La recompensa ha sido creada exitosamente\n");
+            System.out.print("RESULTADO: La recompensa ha sido creada exitosamente\n");
           } else {
-            System.out.print("\nRESULTADO: La entrega de recompensa ha fallado. Inténtalo nuevamente\n");
+            System.out.print("RESULTADO: La entrega de recompensa ha fallado. Inténtalo nuevamente\n");
           }
           break;
         case "4":
@@ -413,101 +412,120 @@ public class Menu {
             } else {
               boolean acceptSuccess = currentStack.accept(selectedQuestion, selectedAnswer);
               if (acceptSuccess) {
-                System.out.print("\nRESULTADO: La respuesta ha sido aceptada exitosamente\n");
+                System.out.print("RESULTADO: La respuesta ha sido aceptada exitosamente\n");
               } else {
-                System.out.print("\nRESULTADO: No se ha podido aceptar la respuesta. Inténtalo nuevamente\n");
+                System.out.print("RESULTADO: No se ha podido aceptar la respuesta. Inténtalo nuevamente\n");
               }
             }
           }
           break;
         case "5":
           // Votar por pregunta o respuesta (VOTE)
-          selectedQuestion = null;
-          selectedAnswer = null;
+          questionsLoop:
+          for (Question question : currentStack.getQuestions()) {
+            if (!question.getAuthor().getName().equals(currentStack.getLoggedUser().getName())) {
+              System.out.print("PREGUNTA:\n");
+              System.out.print(question.toString() + "\n");
+              System.out.print("1. Votar por pregunta\n");
+              System.out.print("2. Votar por respuesta\n");
+              System.out.print("3. Continuar\n");
+              System.out.print("ESCOJA UNA OPCIÓN: ");
 
-          while (selectedQuestion == null && selectedAnswer == null) {
-            for (Question question : currentStack.getQuestions()) {
-              if (!question.getAuthor().getName().equals(currentStack.getLoggedUser().getName())) {
-                System.out.print(question.toString() + "\n");
-                System.out.print("1. Votar por pregunta\n");
-                System.out.print("2. Votar por respuestas asociadas a esta pregunta\n");
-                System.out.print("3. Continuar\n");
-                System.out.print("ESCOJA UNA OPCIÓN:\n");
-                selectedOption = scanner.nextLine();
+              selectedOption = scanner.nextLine();
 
-                switch (selectedOption) {
-                  case "1":
-                    // Vota por pregunta
-                    selectedQuestion = question;
-                    break;
-                  case "2":
-                    // Vota por respuesta
-                    for (Answer answer : question.getAnswers()) {
-                      System.out.print(answer.toString());
-                      System.out.print("1. Seleccionar\n");
-                      System.out.print("2. Continuar\n");
-                      System.out.print("ESCOJA UNA OPCIÓN:\n");
-                      selectedOption = scanner.nextLine();
-                      switch (selectedOption) {
-                        case "1":
-                          // Selecciona respuesta
-                          selectedAnswer = answer;
-                          break;
-                        case "2":
-                          // No selecciona respuesta
-                          continue;
-                        default:
-                          // Opción inválida
-                          System.out.print("\nLa opción ingresada no es válida.\n");
-                      }
+              switch (selectedOption) {
+                case "1":
+                  // Vota por pregunta
+                  selectedQuestion = question;
+                  System.out.print("SELECCIONA TIPO DE VOTO\n");
+                  System.out.print("1. Voto a favor\n");
+                  System.out.print("2. Voto en contra\n");
+                  System.out.print("ESCOJA UNA OPCIÓN: ");
+
+                  String typeOfVote = scanner.nextLine();
+                  if (typeOfVote.equals("1") || typeOfVote.equals("2")) {
+                    boolean voteSuccess = currentStack.vote(selectedQuestion, (typeOfVote.equals("1")) ? "UP" : "DOWN");
+                    if (voteSuccess) {
+                      System.out.print("RESULTADO: Tu voto ha sido creado exitosamente\n");
+                    } else {
+                      System.out.print("RESULTADO: Tu voto no ha podido ser creado. Inténtalo nuevamente.\n");
                     }
-                    break;
-                  case "3":
-                    continue;
-                  default:
+                  } else {
                     // Opción inválida
                     System.out.print("\nLa opción ingresada no es válida.\n");
-                    break;
-                }
-              }
-            }
-          }
+                  }
+                  break questionsLoop;
+                case "2":
+                  // Vota por respuesta
+                  for (Answer answer : question.getAnswers()) {
+                    System.out.print(answer.toString() + "\n");
+                    System.out.print("1. Seleccionar\n");
+                    System.out.print("2. Continuar\n");
+                    System.out.print("ESCOJA UNA OPCIÓN:\n");
+                    selectedOption = scanner.nextLine();
+                    switch (selectedOption) {
+                      case "1":
+                        // Selecciona respuesta
+                        selectedAnswer = answer;
+                        System.out.print("SELECCIONA TIPO DE VOTO\n");
+                        System.out.print("1. Voto a favor\n");
+                        System.out.print("2. Voto en contra\n");
+                        System.out.print("ESCOJA UNA OPCIÓN: ");
 
-          // Selección de tipo de voto
-          if (selectedQuestion != null || selectedAnswer != null) {
-            boolean voteSuccess;
-            System.out.print("SELECCIONA TIPO DE VOTO\n");
-            System.out.print("1. Voto a favor\n");
-            System.out.print("2. Voto en contra\n");
-            System.out.print("ESCOJA UNA OPCIÓN:\n");
-            selectedOption = scanner.nextLine();
-            if (selectedOption == "1" || selectedOption == "2") {
-              if (selectedAnswer != null) {
-                voteSuccess = currentStack.vote(selectedAnswer, (selectedOption == "1") ? "UP" : "DOWN");
-              } else {
-                voteSuccess = currentStack.vote(selectedQuestion, (selectedOption == "1") ? "UP" : "DOWN");
+                        typeOfVote = scanner.nextLine();
+
+                        if (typeOfVote.equals("1") || typeOfVote.equals("2")) {
+                          boolean voteSuccess = currentStack.vote(selectedAnswer, (typeOfVote.equals("1")) ? "UP" : "DOWN");
+                          if (voteSuccess) {
+                            System.out.print("RESULTADO: Tu voto ha sido creado exitosamente\n");
+                          } else {
+                            System.out.print("RESULTADO: Tu voto no ha podido ser creado. Inténtalo nuevamente.\n");
+                          }
+                        } else {
+                          // Opción inválida
+                          System.out.print("\nLa opción ingresada no es válida.\n");
+                        }
+                        break questionsLoop;
+                      case "2":
+                        // No selecciona respuesta
+                        continue;
+                      default:
+                        // Opción inválida
+                        System.out.print("\nLa opción ingresada no es válida.\n");
+                    }
+                  }
+                  break;
+                case "3":
+                  continue;
+                default:
+                  // Opción inválida
+                  System.out.print("\nLa opción ingresada no es válida\n");
+                  break questionsLoop;
               }
-              if (voteSuccess) {
-                System.out.print("\nRESULTADO: Tu voto ha sido creado exitosamente\n");
-              } else {
-                System.out.print("\nRESULTADO: Tu voto no ha podido ser creado. Inténtalo nuevamente.\n");
-              }
-            } else {
-              System.out.print("\nTu opción de voto es inválida. Inténtalo nuevamente.\n");
             }
-          } else {
-            System.out.printf("\nRESPUESTA: No has seleccionado pregunta o respuesta para votar. Inténtalo nuevamente\n");
           }
           break;
         case "6":
           // Agregar una etiqueta
+          System.out.print("Nombre de la etiqueta:\n");
+          String name = scanner.nextLine();
+          System.out.print("Descripción de la etiqueta:\n");
+          String description = scanner.nextLine();
+          Label label = new Label(name, description);
+          boolean addLabel = currentStack.addLabel(label);
+          if (addLabel) {
+            System.out.printf("RESULTADO: La etiqueta ha sido creada exitosamente\n");
+          } else {
+            System.out.printf("RESULTADO: La etiqueta ya existe. Inténtalo nuevamente.\n");
+          }
+          break;
         case "7":
           // Cerrar sesión (LOGOUT)
           boolean logoutSuccess = currentStack.logout();
           if (logoutSuccess) {
-            System.out.printf("\nRESULTADO: Has sido deslogueado exitosamente\n");
+            System.out.printf("RESULTADO: Has sido deslogueado exitosamente\n");
           } else {
-            System.out.printf("\nRESULTADO: Cierre de sesión inválido, no hay usuarios logueados.\n");
+            System.out.printf("RESULTADO: Cierre de sesión inválido, no hay usuarios logueados.\n");
           }
           registerAndLoginMenu();
           break;
@@ -517,7 +535,7 @@ public class Menu {
           scanner.close();
           break;
         default:
-          System.out.printf("\nTu opción no es válida. Selecciona un número entre 1 y 8\n");
+          System.out.printf("\nLa opción no es válida. Selecciona un número entre 1 y 8\n");
           break;
       }
     }
