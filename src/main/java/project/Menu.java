@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Clase que representa el menú interactivo disponible a través de consola
+ */
 public class Menu {
   private static final Scanner scanner = new Scanner(System.in);
   private static boolean exitProgram = false;
@@ -79,7 +82,7 @@ public class Menu {
 
     // Preguntas
     Question question1 = new Question(user3, "¿Qué es un arreglo?",
-            "Me gustaría saber qué es un arreglo en Java");
+            "Me gustaría saber qué es Cerrar sesión un arreglo en Java");
     Question question2 = new Question(user4, "¿Cómo hacer un for loop en Java?",
             "No sé cómo hacer un for loop en Java");
     Question question3 = new Question(user1, "¿Cuál es la diferencia entre un método y una función?",
