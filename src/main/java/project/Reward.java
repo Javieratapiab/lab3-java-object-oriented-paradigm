@@ -16,7 +16,7 @@ public class Reward {
 
   /**
    * Método de instancia (getter) que retorna un usuario
-   * @return
+   * @return Cantidad de recompensa
    */
   public int getQuantity() {
     return quantity;

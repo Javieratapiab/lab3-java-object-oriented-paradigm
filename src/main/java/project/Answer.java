@@ -27,19 +27,19 @@ public class Answer {
   }
 
   /**
-   * Método de instancia (setter) que setea un nuevo estado de aceptación de una respuesta
-   * @param newStatus Nuevo estado de una respuesta
-   */
-  public void setAcceptationStatus(String newStatus) {
-    acceptationStatus = newStatus;
-  }
-
-  /**
    * Método de instancia (getter) que retorna el autor de una respuesta
    * @return User, autor de una respuesta
    */
   public User getAuthor() {
     return author;
+  }
+
+  /**
+   * Método de instancia (setter) que setea un nuevo estado de aceptación de una respuesta
+   * @param newStatus Nuevo estado de una respuesta
+   */
+  public void setAcceptationStatus(String newStatus) {
+    acceptationStatus = newStatus;
   }
 
   /**

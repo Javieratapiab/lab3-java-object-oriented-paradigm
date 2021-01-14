@@ -55,10 +55,9 @@ public class Stack implements Auth {
 
   /**
    * Método de instancia que añade una pregunta a lista de preguntas de un stack
-   * @param question Pregunta a ãndir
-   * @oaram password Contraseña de usuario a registrar
+   * @param question Pregunta a añadir en lista de preguntas
    */
-  private void addQuestion(Question question) {
+  public void addQuestion(Question question) {
     questions = new ArrayList<>(questions);
     questions.add(question);
   }
@@ -66,7 +65,7 @@ public class Stack implements Auth {
   /**
    * Método de instancia que añade un usuario registrado a lista de preguntas de un stack
    * @param name Nombre de usuario a registrar
-   * @oaram password Contraseña de usuario a registrar
+   * @param password Contraseña de usuario a registrar
    */
   public void addUser(String name, String password) {
     users = new ArrayList<>(users);
@@ -92,7 +91,7 @@ public class Stack implements Auth {
 
   /**
    * Método de instancia privado (setter) que asigna un usuario logueado
-   * @param user
+   * @param user Usuario a loguear
    */
   private void setLoggedUser(User user) {
     userLogged = user;
