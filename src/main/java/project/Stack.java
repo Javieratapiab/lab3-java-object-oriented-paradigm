@@ -244,17 +244,17 @@ public class Stack implements Auth {
     boolean result;
 
     switch (voteType) {
-      case "UP" -> {
+      case "UP": {
         question.addOrSubstractVotes(1);
         question.getAuthor().addOrSubstractReputation(10);
         result = true;
       }
-      case "DOWN" -> {
+      case "DOWN": {
         question.addOrSubstractVotes(-1);
         question.getAuthor().addOrSubstractReputation(-2);
         result = true;
       }
-      default -> result = false;
+      default : result = false;
     }
 
     return result;
@@ -271,18 +271,18 @@ public class Stack implements Auth {
     boolean result;
 
     switch (voteType) {
-      case "UP" -> {
+      case "UP": {
         answer.addOrSubstractVotes(1);
         answer.getAuthor().addOrSubstractReputation(10);
         result = true;
       }
-      case "DOWN" -> {
+      case "DOWN": {
         answer.addOrSubstractVotes(-1);
         answer.getAuthor().addOrSubstractReputation(-2);
         userLogged.addOrSubstractReputation(-1);
         result = true;
       }
-      default -> result = false;
+      default: result = false;
     }
 
     return result;
