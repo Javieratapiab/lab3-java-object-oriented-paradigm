@@ -248,11 +248,13 @@ public class Stack implements Auth {
         question.addOrSubstractVotes(1);
         question.getAuthor().addOrSubstractReputation(10);
         result = true;
+        break;
       }
       case "DOWN": {
         question.addOrSubstractVotes(-1);
         question.getAuthor().addOrSubstractReputation(-2);
         result = true;
+        break;
       }
       default : result = false;
     }
@@ -275,12 +277,14 @@ public class Stack implements Auth {
         answer.addOrSubstractVotes(1);
         answer.getAuthor().addOrSubstractReputation(10);
         result = true;
+        break;
       }
       case "DOWN": {
         answer.addOrSubstractVotes(-1);
         answer.getAuthor().addOrSubstractReputation(-2);
         userLogged.addOrSubstractReputation(-1);
         result = true;
+        break;
       }
       default: result = false;
     }
